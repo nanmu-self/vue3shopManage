@@ -133,7 +133,6 @@ const submit = () => {
 
     localStorage.setItem("token", user.token);
     let userInfo = await getInfo();
-    console.log(userInfo);
     store.setUserInfo(userInfo);
     // 跳转到首页
     router.push("/");

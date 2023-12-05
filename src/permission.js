@@ -1,7 +1,10 @@
 import router from "./router";
 
+let loadingInstance = null;
+
 // 全局前置守卫
 router.beforeEach((to, from, next) => {
+  loadingInstance = ElLoading.service();
   const token = localStorage.getItem("token");
   // 登录校验
   if (to.path != "/login" && !token) {
@@ -23,4 +26,11 @@ router.beforeEach((to, from, next) => {
   }
 
   next();
+});
+
+router.afterEach((to, from) => {
+  //   ElLoading.service({ fullscreen: false });
+  loadingInstance.close();
+  //   修该页面标题
+  document.title = to.meta.title;
 });
