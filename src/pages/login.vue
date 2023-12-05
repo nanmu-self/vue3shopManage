@@ -42,9 +42,14 @@
             <el-input v-model="form.password" placeholder="密码" />
           </el-form-item>
           <a class="form_link">忘记密码？</a>
-          <button class="form_button button submit" @click="submit">
+
+          <el-button
+            :loading="loading"
+            class="form_button button submit"
+            @click="submit"
+          >
             SIGN IN
-          </button>
+          </el-button>
         </el-form>
       </div>
 
@@ -58,7 +63,9 @@
           <p class="switch_description description">
             已经有账号了嘛，去登入账号来进入奇妙世界吧！！！
           </p>
-          <button class="switch_button button switch-btn">SIGN IN</button>
+          <button class="switch_button button switch-btn bg-neutral-200">
+            SIGN IN
+          </button>
         </div>
 
         <div class="switch_container" id="switch-c2">
@@ -80,10 +87,18 @@
   </div>
 </template>
 <script setup>
-import { login } from "@/api/admin.js";
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/store/index.js";
+import { login, getInfo } from "@/api/admin.js";
+
+const router = useRouter();
+const store = useUserStore();
+
+const loading = ref(false);
+
 const form = reactive({
-  username: "",
-  password: "",
+  username: "admin",
+  password: "admin",
 });
 
 const rules = reactive({
@@ -106,27 +121,27 @@ const rules = reactive({
 const formRef = ref(null);
 //验证表单
 const submit = () => {
-  formRef.value.validate((valid) => {
+  loading.value = true;
+  formRef.value.validate(async (valid) => {
     if (!valid) {
       return false;
     }
-    login(form.username, form.password)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => {
-        ElNotification({
-          //   title: err.response.data.errorCode,
-          message: err.response.data.msg || "登录失败",
-          type: "error",
-          duration: 3000,
-        });
-      });
+
+    let user = await login(form.username, form.password);
+    loading.value = false;
+    if (!user.token) return;
+
+    localStorage.setItem("token", user.token);
+    let userInfo = await getInfo();
+    console.log(userInfo);
+    store.setUserInfo(userInfo);
+    // 跳转到首页
+    router.push("/");
   });
 };
 </script>
 <style scoped>
-::v-deep .el-input__wrapper {
+/deep/ .el-input__wrapper {
   letter-spacing: 0.15px;
   border: none;
   outline: none;
