@@ -2,13 +2,21 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import Index from "@/pages/index.vue";
 import LOGIN from "@/pages/login.vue";
 import NotFound from "@/pages/404.vue";
+import Admin from "@/layouts/admin.vue";
 const routes = [
   {
     path: "/",
-    component: Index,
-    meta: {
-      title: "首页",
-    },
+    component: Admin,
+    children: [
+      {
+        path: "/",
+        name: "Index",
+        component: Index,
+        meta: {
+          title: "首页",
+        },
+      },
+    ],
   },
   {
     path: "/login",
