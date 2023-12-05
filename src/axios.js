@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useUserStore } from "@/store/index.js";
 
 const service = axios.create({
   baseURL: "/api",
@@ -32,9 +33,18 @@ service.interceptors.response.use(
   function (error) {
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
+    let msg = error.response.data.msg;
+    if (msg == "非法token，请先登录！") {
+      const { setUserInfo } = useUserStore();
+      setUserInfo({});
+      localStorage.removeItem("token");
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
+    }
     ElNotification({
       //   title: err.response.data.errorCode,
-      message: error.response.data.msg || "登录失败",
+      message: msg || "登录失败",
       type: "error",
       duration: 3000,
     });

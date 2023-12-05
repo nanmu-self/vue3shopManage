@@ -14,3 +14,11 @@ export function getInfo() {
 export function logout() {
   return axios.post("/admin/logout");
 }
+//修改密码
+export function changePassword(oldpassword, password, repassword) {
+  return axios.post("/admin/updatepassword", {
+    oldpassword,
+    password,
+    repassword,
+  });
+}

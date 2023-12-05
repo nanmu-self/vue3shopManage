@@ -17,6 +17,7 @@ router.beforeEach((to, from, next) => {
   }
   //   防止重复登陆
   if (to.path == "/login" && token) {
+    console.log(token);
     ElNotification({
       message: "请勿重复登陆",
       type: "warning",

@@ -1,5 +1,8 @@
 import { defineStore } from "pinia";
 
+import { logout } from "@/api/admin.js";
+import { useRouter } from "vue-router";
+
 export const useUserStore = defineStore(
   "user",
   () => {
