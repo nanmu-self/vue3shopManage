@@ -139,6 +139,19 @@ const submit = () => {
     router.push("/");
   });
 };
+
+const onKeyUp = (e) => {
+  if (e.keyCode == 13) {
+    submit();
+  }
+};
+onMounted(() => {
+  document.addEventListener("keyup", onKeyUp);
+});
+
+onBeforeMount(() => {
+  document.removeEventListener("keyup", onKeyUp);
+});
 </script>
 <style scoped>
 /deep/ .el-input__wrapper {
