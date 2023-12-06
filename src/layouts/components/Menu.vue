@@ -1,12 +1,12 @@
 <template>
   <div class="menuBox" :style="{ width: expand ? '240px' : '64px' }">
     <el-menu
-      default-active="2"
       class="border-0"
       @select="handleSelect"
       :collapse="!expand"
       :collapse-transition="false"
       :unique-opened="true"
+      :default-active="defaultActive"
     >
       <template v-for="(item, i) in users.menus" :key="i">
         <el-sub-menu :index="item.name" v-if="item.child && item.child.length">
@@ -37,13 +37,17 @@
 <script setup>
 import { useUserStore } from "@/store/index.js";
 import { storeToRefs } from "pinia";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
+const route = useRoute();
 const store = useUserStore();
 const { users, expand } = storeToRefs(store);
+// 点击跳转
 const handleSelect = (e) => {
   router.push(e);
 };
+//默认打开
+const defaultActive = ref(route.path);
 </script>
 <style scoped>
 .menuBox {

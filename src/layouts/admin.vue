@@ -19,7 +19,7 @@
 <script setup>
 import Head from "./components/Head.vue";
 import Menu from "./components/Menu.vue";
-import TagList from "./components/TagList.vue";
+import TagList from "./components/TagLists.vue";
 import { useUserStore } from "@/store/index.js";
 const store = useUserStore();
 </script>

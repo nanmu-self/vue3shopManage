@@ -153,7 +153,7 @@ onBeforeMount(() => {
 });
 </script>
 <style scoped>
-/deep/ .el-input__wrapper {
+:deep(.el-input__wrapper) {
   letter-spacing: 0.15px;
   border: none;
   outline: none;

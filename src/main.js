@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import "virtual:windi.css";
-import router from "./router";
+import { router } from "./router";
 import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 // 全局路由守卫

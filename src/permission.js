@@ -1,5 +1,5 @@
-import router from "./router";
-
+import { router, addRouter } from "./router";
+import { useUserStore } from "@/store/index.js";
 let loadingInstance = null;
 
 // 全局前置守卫
@@ -26,9 +26,13 @@ router.beforeEach((to, from, next) => {
     return next({ path: from.path || "/" });
   }
 
+  if (token) {
+    const store = useUserStore();
+    addRouter(store.users.menus);
+  }
   next();
 });
-
+// 全局后置守卫
 router.afterEach((to, from) => {
   //   ElLoading.service({ fullscreen: false });
   loadingInstance.close();
