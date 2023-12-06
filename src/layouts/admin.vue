@@ -4,7 +4,11 @@
       <Head />
     </el-header>
     <el-container>
-      <el-aside><Menu /></el-aside>
+      <el-aside
+        style="transition: 0.5s"
+        :style="{ width: store.expand ? '240px' : '64px' }"
+        ><Menu
+      /></el-aside>
       <el-main>
         <TagList />
         <router-view></router-view>
@@ -16,4 +20,6 @@
 import Head from "./components/Head.vue";
 import Menu from "./components/Menu.vue";
 import TagList from "./components/TagList.vue";
+import { useUserStore } from "@/store/index.js";
+const store = useUserStore();
 </script>

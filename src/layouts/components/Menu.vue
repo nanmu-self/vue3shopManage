@@ -1,6 +1,13 @@
 <template>
-  <div class="menuBox">
-    <el-menu default-active="2" class="border-0" @select="handleSelect">
+  <div class="menuBox" :style="{ width: expand ? '240px' : '64px' }">
+    <el-menu
+      default-active="2"
+      class="border-0"
+      @select="handleSelect"
+      :collapse="!expand"
+      :collapse-transition="false"
+      :unique-opened="true"
+    >
       <template v-for="(item, i) in users.menus" :key="i">
         <el-sub-menu :index="item.name" v-if="item.child && item.child.length">
           <template #title>
@@ -33,19 +40,19 @@ import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 const router = useRouter();
 const store = useUserStore();
-const { users } = storeToRefs(store);
-
+const { users, expand } = storeToRefs(store);
 const handleSelect = (e) => {
   router.push(e);
 };
 </script>
 <style scoped>
 .menuBox {
-  width: 250px;
   top: 64px;
   bottom: 0;
   left: 0;
   overflow-y: auto;
+  overflow-x: hidden;
+  transition: 0.2s;
   @apply shadow-md fixed bg-light-50;
 }
 /*定义滚动条高宽及背景

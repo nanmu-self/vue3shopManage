@@ -5,7 +5,16 @@
         <el-icon class="mr-1"><ChromeFilled /></el-icon>
         <div>商城后台</div>
       </div>
-      <el-icon class="icon-btn"><Fold /></el-icon>
+      <el-tooltip
+        effect="dark"
+        :content="expand ? '折叠' : '展开'"
+        placement="bottom"
+      >
+        <el-icon class="icon-btn" @click="store.sidebarWidth()">
+          <Fold v-if="expand" />
+          <Expand v-else />
+        </el-icon>
+      </el-tooltip>
       <el-tooltip effect="dark" content="刷新" placement="bottom">
         <el-icon class="icon-btn" @click="handleRelad"><Refresh /></el-icon>
       </el-tooltip>
@@ -71,7 +80,7 @@ import FormDrawer from "@/components/FormDrawer.vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 const store = useUserStore();
-const { users } = storeToRefs(store);
+const { users, expand } = storeToRefs(store);
 // const drawer = ref(false);
 
 const form = reactive({
