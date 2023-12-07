@@ -22,7 +22,7 @@ const routes = [
 const asyncRouter = [
   {
     path: "/",
-    name: "Index",
+    name: "/",
     component: () => import("@/pages/index.vue"),
     meta: {
       title: "首页",
@@ -36,6 +36,14 @@ const asyncRouter = [
       title: "商品列表",
     },
   },
+  {
+    path: "/category/list",
+    name: "/category/list",
+    component: () => import("@/pages/category/list.vue"),
+    meta: {
+      title: "分类管理",
+    },
+  },
 ];
 
 export const router = createRouter({
@@ -45,15 +53,14 @@ export const router = createRouter({
 });
 
 export function addRouter(menus) {
-  // let hsaNewRouter = false;
+  let isrouter = false;
   function add(arr) {
     arr.forEach((element) => {
       let item = asyncRouter.find((e) => e.path == element.frontpath);
 
       if (item && !router.hasRoute(item.path)) {
         router.addRoute("admin", item);
-
-        // hsaNewRouter = true;
+        isrouter = true;
       }
       if (element.child && element.child.length > 0) {
         add(element.child);
@@ -61,5 +68,5 @@ export function addRouter(menus) {
     });
   }
   add(menus);
-  // return hsaNewRouter;
+  return isrouter;
 }

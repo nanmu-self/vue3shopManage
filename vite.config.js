@@ -14,6 +14,7 @@ export default defineConfig({
   },
   // 配置代理，处理跨域
   server: {
+    host: "0.0.0.0",
     proxy: {
       "/api": {
         target: "http://ceshi13.dishait.cn",

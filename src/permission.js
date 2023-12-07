@@ -26,9 +26,10 @@ router.beforeEach((to, from, next) => {
     return next({ path: from.path || "/" });
   }
 
-  if (token) {
-    const store = useUserStore();
-    addRouter(store.users.menus);
+  const store = useUserStore();
+
+  if (addRouter(store.users.menus)) {
+    return next(to.fullPath);
   }
   next();
 });
