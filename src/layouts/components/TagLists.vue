@@ -111,6 +111,7 @@ const removeTab = (e) => {
   top: 64px;
   height: 44px;
   right: 0;
+  z-index: 999;
 }
 .tagBtn {
   @apply bg-white rounded ml-auto flex items-center justify-center;

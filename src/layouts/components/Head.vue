@@ -167,6 +167,7 @@ const handleRelad = () => {
 .head {
   @apply flex items-center justify-between text-light-50 bg-blue-500 fixed top-0 left-0 right-0;
   height: 64px;
+  z-index: 999;
 }
 .login {
   @apply flex items-center justify-center text-xl font-thin;
