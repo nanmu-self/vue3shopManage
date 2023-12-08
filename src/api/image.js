@@ -11,3 +11,10 @@ export function createimageClass(name, order) {
     order,
   });
 }
+//修改图库分类
+export function upimageClass(id, name, order) {
+  return axios.post("/admin/image_class/" + id, {
+    name,
+    order,
+  });
+}

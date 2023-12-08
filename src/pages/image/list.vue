@@ -6,7 +6,7 @@
       >
     </el-header>
 
-    <imgContainer />
+    <imgContainer ref="imgContainerRef" @edit="handleEdit" />
   </el-container>
 
   <FormDrawer ref="formDrawerRef" title="新增" @submit="handleSubmit">
@@ -22,10 +22,20 @@
 </template>
 <script setup>
 import FormDrawer from "@/components/FormDrawer.vue";
-import { createimageClass } from "@/api/image.js";
+import { createimageClass, upimageClass } from "@/api/image.js";
 import imgContainer from "./img-container.vue";
 const windowHeight = window.innerHeight || document.body.clientHeight;
 let h = windowHeight - 64 - 44 - 40;
+
+const editId = ref(0);
+// 修改图库分类
+const handleEdit = (item) => {
+  console.log(item);
+  editId.value = item.id;
+  form.name = item.name;
+  form.order = item.order;
+  formDrawerRef.value.drawerswitch();
+};
 
 const formRef = ref(null);
 
@@ -45,26 +55,45 @@ let rules = {
 };
 
 const formDrawerRef = ref(null);
-
+const imgContainerRef = ref(null);
 const handleSubmit = () => {
   formRef.value.validate((valid) => {
     if (!valid) return false;
     formDrawerRef.value.loadingSwitch();
-    createimageClass(form.name, form.order)
-      .then((res) => {
-        ElNotification({
-          message: "新增成功",
-          type: "success",
+    if (editId.value) {
+      upimageClass(editId.value, form.name, form.order)
+        .then((res) => {
+          ElNotification({
+            message: "修改成功",
+            type: "success",
+          });
+          imgContainerRef.value.getData();
+          formDrawerRef.value.drawerswitch();
+        })
+        .finally(() => {
+          formDrawerRef.value.loadingSwitch();
         });
-        formDrawerRef.value.drawerswitch();
-      })
-      .finally(() => {
-        formDrawerRef.value.loadingSwitch();
-      });
+    } else {
+      // 新增加
+      createimageClass(form.name, form.order)
+        .then((res) => {
+          ElNotification({
+            message: "新增成功",
+            type: "success",
+          });
+          imgContainerRef.value.getData();
+          formDrawerRef.value.drawerswitch();
+        })
+        .finally(() => {
+          formDrawerRef.value.loadingSwitch();
+        });
+    }
   });
 };
-
+//新增分类
 const handleCreate = () => {
+  form.name = "";
+  form.order = 50;
   formDrawerRef.value.drawerswitch();
 };
 </script>

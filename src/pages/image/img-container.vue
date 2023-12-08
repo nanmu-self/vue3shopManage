@@ -14,7 +14,7 @@
           }}</span>
           <div>
             <el-button text type="primary"
-              ><el-icon :size="12"><Edit /></el-icon
+              ><el-icon :size="12" @click="handleEdit(item)"><Edit /></el-icon
             ></el-button>
             <el-button text type="primary"
               ><el-icon :size="12"><Close /></el-icon
@@ -44,6 +44,12 @@
 <script setup>
 import { getimageClass } from "@/api/image.js";
 
+// 修改
+const handleEdit = (id) => {
+  emit("edit", id);
+};
+const emit = defineEmits(["edit"]);
+
 const loading = ref(false);
 const imgClassList = ref([]);
 const activeId = ref(0);
@@ -54,13 +60,10 @@ const limit = ref(10); //一页多少数据
 const total = ref(0); //总数量
 
 const getData = (page = 1) => {
-  console.log(page);
   currentPage.value = page;
-  //   return;
   loading.value = true;
   getimageClass(page)
     .then((res) => {
-      console.log(res);
       imgClassList.value = res.list;
       total.value = res.totalCount;
       activeId.value = res.list[0].id;
@@ -70,6 +73,9 @@ const getData = (page = 1) => {
     });
 };
 getData();
+defineExpose({
+  getData,
+});
 
 const handleChangeActiveId = (id) => {
   activeId.value = id;
