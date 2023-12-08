@@ -4,12 +4,17 @@
       <el-button type="primary" size="small" @click="handleCreate"
         >新增图片分类</el-button
       >
+      <el-button type="warning" size="small" @click="handleUpload"
+        >上传图片</el-button
+      >
     </el-header>
-
-    <imgContainer ref="imgContainerRef" @edit="handleEdit" />
+    <el-container>
+      <imgAside ref="imgAsideRef" @edit="handleEdit" />
+      <imgMain ref="imgMainRef" />
+    </el-container>
   </el-container>
 
-  <FormDrawer ref="formDrawerRef" title="新增" @submit="handleSubmit">
+  <FormDrawer ref="formDrawerRef" :title="drawerTitle" @submit="handleSubmit">
     <el-form :model="form" ref="formRef" :rules="rules" label-width="80px">
       <el-form-item label="分类名称" prop="name">
         <el-input v-model="form.name"></el-input>
@@ -23,14 +28,22 @@
 <script setup>
 import FormDrawer from "@/components/FormDrawer.vue";
 import { createimageClass, upimageClass } from "@/api/image.js";
-import imgContainer from "./img-container.vue";
+import imgAside from "./img-aside.vue";
+import imgMain from "./img-main.vue";
 const windowHeight = window.innerHeight || document.body.clientHeight;
 let h = windowHeight - 64 - 44 - 40;
 
+const imgMainRef = ref(null);
+// 上传图片按钮
+const handleUpload = () => {
+  imgMainRef.value.drawerSwitch();
+};
+
+const drawerTitle = ref("");
 const editId = ref(0);
 // 修改图库分类
 const handleEdit = (item) => {
-  console.log(item);
+  drawerTitle.value = "修改图片分类";
   editId.value = item.id;
   form.name = item.name;
   form.order = item.order;
@@ -55,51 +68,56 @@ let rules = {
 };
 
 const formDrawerRef = ref(null);
-const imgContainerRef = ref(null);
+const imgAsideRef = ref(null);
 const handleSubmit = () => {
   formRef.value.validate((valid) => {
     if (!valid) return false;
     formDrawerRef.value.loadingSwitch();
-    if (editId.value) {
-      upimageClass(editId.value, form.name, form.order)
-        .then((res) => {
-          ElNotification({
-            message: "修改成功",
-            type: "success",
-          });
-          imgContainerRef.value.getData();
-          formDrawerRef.value.drawerswitch();
-        })
-        .finally(() => {
-          formDrawerRef.value.loadingSwitch();
+    let fun = editId.value
+      ? upimageClass(editId.value, form.name, form.order)
+      : createimageClass(form.name, form.order);
+    fun
+      .then((res) => {
+        ElNotification({
+          message: editId.value ? "修改成功" : "新增成功",
+          type: "success",
         });
-    } else {
-      // 新增加
-      createimageClass(form.name, form.order)
-        .then((res) => {
-          ElNotification({
-            message: "新增成功",
-            type: "success",
-          });
-          imgContainerRef.value.getData();
-          formDrawerRef.value.drawerswitch();
-        })
-        .finally(() => {
-          formDrawerRef.value.loadingSwitch();
-        });
-    }
+        imgAsideRef.value.getData();
+        formDrawerRef.value.drawerswitch();
+      })
+      .finally(() => {
+        formDrawerRef.value.loadingSwitch();
+      });
   });
 };
 //新增分类
 const handleCreate = () => {
+  editId.value = 0;
+  drawerTitle.value = "新增图片分类";
   form.name = "";
   form.order = 50;
   formDrawerRef.value.drawerswitch();
 };
 </script>
-<style scoped>
+<style>
 .image-header {
   border-bottom: 1px solid #eeeeee;
   @apply flex items-center;
+}
+.image-aside {
+  border-right: 1px solid #eeeeee;
+  position: relative;
+}
+.top {
+  overflow-y: auto;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 50px;
+}
+.bottom {
+  @apply absolute bottom-0 left-0 right-0 flex items-center justify-center;
+  height: 50px;
 }
 </style>

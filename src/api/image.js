@@ -18,3 +18,27 @@ export function upimageClass(id, name, order) {
     order,
   });
 }
+//删除图库分类
+export function deleteimageClass(id) {
+  return axios.post(`/admin/image_class/${id}/delete`);
+}
+// 获取指定分类下的图片列表
+export function getimageList(id, page) {
+  return axios.get(`/admin/image_class/${id}/image/${page}`);
+}
+//修改图片名称
+
+export function upimageName(id, name) {
+  return axios.post(`/admin/image/` + id, {
+    name,
+  });
+}
+//删除图片
+export function deleteimage(ids) {
+  return axios.post(`/admin/image/delete_all`, {
+    ids,
+  });
+}
+
+//上传图片
+export const uploadimage = "/api/admin/image/upload";
