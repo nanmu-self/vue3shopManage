@@ -28,7 +28,7 @@ router.beforeEach((to, from, next) => {
 
   const store = useUserStore();
   // 解决刷新动态路由失效
-  if (store.users.menus && addRouter(store.users.menus)) {
+  if (store.users?.menus && addRouter(store.users.menus)) {
     return next(to.fullPath);
   }
   next();

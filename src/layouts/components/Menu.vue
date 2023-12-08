@@ -59,26 +59,4 @@ const defaultActive = ref(route.path);
   transition: 0.2s;
   @apply shadow-md fixed bg-light-50;
 }
-/*定义滚动条高宽及背景
- 高宽分别对应横竖滚动条的尺寸*/
-.menuBox::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-/*定义滚动条轨道
- 内阴影+圆角*/
-.menuBox ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-  background-color: #f5f5f5;
-}
-/*定义滑块
-     内阴影+圆角*/
-.menuBox ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: #b3b3b3;
-}
 </style>
