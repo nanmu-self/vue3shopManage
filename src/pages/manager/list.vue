@@ -20,9 +20,7 @@
       </div>
     </template>
     <div class="flex items-center justify-between mb-4">
-      <el-button type="primary" size="small" @click="handleAdd">
-        新增</el-button
-      >
+      <el-button type="primary" size="small" @click="addBtn"> 新增</el-button>
       <el-tooltip effect="dark" content="刷新数据" placement="top">
         <el-button type="primary" text="" size="default" @click="getData()">
           <el-icon><Refresh /></el-icon
@@ -117,7 +115,7 @@
       <el-form-item label="头像">
         <selectImg v-model="form.avatar" />
       </el-form-item>
-      <el-form-item label="所属角色">
+      <el-form-item label="所属角色" prop="role_id">
         <el-select v-model="form.role_id" placeholder="选择所属角色">
           <el-option
             v-for="item in roles"
@@ -144,12 +142,50 @@ import {
   updateAdmin,
   deleteAdmin,
 } from "@/api/admin.js";
+import { useInitTable } from "@/hooks/useCommon";
+const {
+  handleDelete,
+  selectedId,
+  formRef,
+  tableData,
+  totalCount,
+  loading,
+  getData,
+  form,
+  formDrawerRef,
+  handleEdit,
+  addBtn,
+  handleSubmit,
+} = useInitTable({
+  deleteFun: deleteAdmin, //删除
+  getList: getAdminList, //获取列表
+  updateData: updateAdmin, //更新数据
+  addData: addAdmin, //新增数据
+  // 获取数据成功之后的回调
+  success: (res) => {
+    tableData.value = res.list.map((e) => {
+      e.loading = false;
+      return e;
+    });
+    roles.value = res.roles;
+    totalCount.value = res.totalCount;
+  },
+  // 初始化表单数据
+  InitFormData: {
+    username: "",
+    password: "",
+    role_id: null,
+    status: 1,
+    avatar: "",
+  },
+});
 
 //搜索管理员
 const searchKey = ref("");
 const searchUser = () => {
   getData(1, searchKey.value);
 };
+// 重置按钮
 const reset = () => {
   searchKey.value = "";
   getData();
@@ -165,65 +201,13 @@ const handleSwitch = (status, item) => {
         type: "success",
       });
       item.status = status;
-      //   getData();
     })
     .finally(() => {
       item.loading = false;
     });
 };
 
-//删除公告
-const handleDelete = (id) => {
-  deleteAdmin(id).then((res) => {
-    ElNotification({
-      message: "删除成功",
-      type: "success",
-    });
-    getData();
-  });
-};
-
-//选中的id
-const selectedId = ref(0);
-//修改管理员
-const handleEdit = (item) => {
-  console.log(item);
-  selectedId.value = item.id;
-  form.username = item.username;
-  form.role_id = item.role_id;
-  form.status = item.status;
-  form.avatar = item.avatar;
-
-  formDrawerRef.value.drawerswitch();
-};
-
-const formRef = ref(null);
-
-const handleSubmit = () => {
-  formRef.value.validate((valid) => {
-    if (!valid) return false;
-    let { username, password, role_id, status, avatar } = form;
-    let fun = selectedId.value
-      ? updateAdmin(
-          selectedId.value,
-          username,
-          password,
-          role_id,
-          status,
-          avatar
-        )
-      : addAdmin(username, password, role_id, status, avatar);
-    fun.then((res) => {
-      ElNotification({
-        message: selectedId.value ? "修改成功" : "新增成功",
-        type: "success",
-      });
-      getData();
-      formDrawerRef.value.drawerswitch();
-    });
-  });
-};
-
+//表单验证规则
 const rules = {
   username: [
     {
@@ -237,49 +221,16 @@ const rules = {
       message: "请输入密码",
     },
   ],
-};
-const form = reactive({
-  username: "",
-  password: "",
-  role_id: null,
-  status: 1,
-  avatar: "",
-});
-
-const formDrawerRef = ref(null);
-
-// 新增用户
-const handleAdd = () => {
-  selectedId.value = 0;
-  form.username = "";
-  form.password = "";
-  form.role_id = null;
-  form.status = 1;
-  form.avatar = "";
-  formDrawerRef.value.drawerswitch();
+  role_id: [
+    {
+      required: true,
+      message: "请选择所属角色",
+    },
+  ],
 };
 
-const tableData = ref([]);
-const totalCount = ref(0);
-const loading = ref(false);
 // 所有管理员角色
 const roles = ref([]);
 
-const getData = (page = 1, keyword = "", limit = 10) => {
-  loading.value = true;
-  getAdminList(page, keyword, limit)
-    .then((res) => {
-      console.log(res);
-      tableData.value = res.list.map((e) => {
-        e.loading = false;
-        return e;
-      });
-      roles.value = res.roles;
-      totalCount.value = res.totalCount;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
-};
 getData();
 </script>

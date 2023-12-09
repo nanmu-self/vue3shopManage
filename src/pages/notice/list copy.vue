@@ -1,7 +1,9 @@
 <template>
   <el-card shadow="never">
     <div class="flex items-center justify-between mb-4">
-      <el-button type="primary" size="small" @click="addBtn"> 新增</el-button>
+      <el-button type="primary" size="small" @click="handleAdd">
+        新增</el-button
+      >
       <el-tooltip effect="dark" content="刷新数据" placement="top">
         <el-button type="primary" text="" size="default" @click="getData(1)">
           <el-icon><Refresh /></el-icon
@@ -73,35 +75,47 @@ import {
   updateNotice,
   deleteNotice,
 } from "@/api/notice.js";
-import { useInitTable } from "@/hooks/useCommon";
-const {
-  tableData,
-  totalCount,
-  loading,
-  formRef,
-  selectedId,
-  formDrawerRef,
-  getData,
-  form,
-  addBtn,
-  handleDelete,
-  handleEdit,
-  handleSubmit,
-} = useInitTable({
-  getList: getNotice, //获取列表
-  deleteFun: deleteNotice, //删除
-  updateData: updateNotice, //更新数据
-  addData: addNotice, //新增数据
-  InitFormData: {
-    title: "",
-    content: "",
-  },
-  // 获取数据成功之后的回调
-  success: (res) => {
-    tableData.value = res.list;
-    totalCount.value = res.totalCount;
-  },
-});
+
+//删除公告
+const handleDelete = (id) => {
+  deleteNotice(id).then((res) => {
+    ElNotification({
+      message: "删除成功",
+      type: "success",
+    });
+    getData();
+  });
+};
+
+//选中的id
+const selectedId = ref(0);
+//修改公告
+const handleEdit = (item) => {
+  selectedId.value = item.id;
+  form.title = item.title;
+  form.content = item.content;
+  formDrawerRef.value.drawerswitch();
+};
+
+const formRef = ref(null);
+
+const handleSubmit = () => {
+  formRef.value.validate((valid) => {
+    if (!valid) return false;
+    console.log(selectedId.value);
+    let fun = selectedId.value
+      ? updateNotice(selectedId.value, form.title, form.content)
+      : addNotice(form.title, form.content);
+    fun.then((res) => {
+      ElNotification({
+        message: selectedId.value ? "修改成功" : "新增成功",
+        type: "success",
+      });
+      getData();
+      formDrawerRef.value.drawerswitch();
+    });
+  });
+};
 
 const rules = {
   title: [
@@ -117,6 +131,36 @@ const rules = {
     },
   ],
 };
+const form = reactive({
+  title: "",
+  content: "",
+});
 
+const formDrawerRef = ref(null);
+
+// 新增公告
+const handleAdd = () => {
+  selectedId.value = 0;
+  form.title = "";
+  form.content = "";
+  formDrawerRef.value.drawerswitch();
+};
+
+const tableData = ref([]);
+const totalCount = ref(0);
+const loading = ref(false);
+
+const getData = (page = 1) => {
+  console.log(page);
+  loading.value = true;
+  getNotice(page)
+    .then((res) => {
+      tableData.value = res.list;
+      totalCount.value = res.totalCount;
+    })
+    .finally(() => {
+      loading.value = false;
+    });
+};
 getData();
 </script>

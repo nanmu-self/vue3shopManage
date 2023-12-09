@@ -33,24 +33,12 @@ export function changeAdminStatus(id, status) {
   });
 }
 //增加管理员
-export function addAdmin(username, password, role_id, status, avatar) {
-  return axios.post("/admin/manager", {
-    username,
-    password,
-    role_id,
-    status,
-    avatar,
-  });
+export function addAdmin(data) {
+  return axios.post("/admin/manager", data);
 }
 //修改管理员
-export function updateAdmin(id, username, password, role_id, status, avatar) {
-  return axios.post("/admin/manager/" + id, {
-    username,
-    password,
-    role_id,
-    status,
-    avatar,
-  });
+export function updateAdmin(id, data) {
+  return axios.post("/admin/manager/" + id, data);
 }
 //删除管理员
 export function deleteAdmin(id) {

@@ -108,6 +108,14 @@ const asyncRouter = [
       title: "管理员管理",
     },
   },
+  {
+    path: "/skus/list",
+    name: "/skus/list",
+    component: () => import("@/pages/skus/list.vue"),
+    meta: {
+      title: "规格管理",
+    },
+  },
 ];
 
 export const router = createRouter({
