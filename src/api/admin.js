@@ -22,3 +22,13 @@ export function changePassword(oldpassword, password, repassword) {
     repassword,
   });
 }
+//管理员列表
+export function getAdminList(keyword = "", page = 1, limit = 10) {
+  return axios.get(`/admin/manager/${page}?limit=${limit}&keyword=${keyword}`);
+}
+//修改管理员状态
+export function changeAdminStatus(id, status) {
+  return axios.post(`/admin/manager/${id}/update_status`, {
+    status,
+  });
+}
