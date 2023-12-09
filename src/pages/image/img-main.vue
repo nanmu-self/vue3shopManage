@@ -2,8 +2,18 @@
   <el-main class="image-aside" v-loading="loading">
     <div class="top p-3">
       <el-row :gutter="10">
-        <el-col :span="6" :offset="0" v-for="item in dataList" :key="item.id">
-          <el-card shadow="hover" :body-style="{ padding: 0 }">
+        <el-col
+          class="mb-3"
+          :span="6"
+          :offset="0"
+          v-for="item in dataList"
+          :key="item.id"
+        >
+          <el-card
+            shadow="hover"
+            :body-style="{ padding: 0 }"
+            :class="{ active: item.checked }"
+          >
             <div class="relative">
               <el-image
                 :src="item.url"
@@ -14,7 +24,12 @@
               ></el-image>
               <div class="imgTitle">{{ item.name }}</div>
             </div>
-            <div class="flex items-center justify-center p-2">
+            <div class="flex items-center justify-center">
+              <el-checkbox
+                v-if="isCheckbox"
+                v-model="item.checked"
+                @change="handleCheck(item)"
+              />
               <el-button
                 type="primary"
                 size="small"
@@ -59,7 +74,26 @@
 import { getimageList, upimageName, deleteimage } from "@/api/image.js";
 import upFile from "@/components/upFile.vue";
 import bus from "./bus.js";
+defineProps({
+  isCheckbox: {
+    type: Boolean,
+    default: false,
+  },
+});
+//选择图片
+const handleCheck = (item) => {
+  let t = dataList.value.filter((e) => e.checked);
+  if (item.checked && t.length > 1) {
+    item.checked = false;
+    return ElNotification({
+      message: "最多选择一张",
+      type: "error",
+    });
+  }
+  emit("selectimg", t);
+};
 
+const emit = defineEmits(["selectimg"]);
 const upingSuccess = (res) => {
   ElNotification({
     message: "上传成功",
@@ -132,7 +166,10 @@ const getData = (page = 1) => {
   loading.value = true;
   getimageList(imageClassId.value, currentPage.value)
     .then((res) => {
-      dataList.value = res.list;
+      dataList.value = res.list.map((e) => {
+        e.checked = false;
+        return e;
+      });
       total.value = res.totalCount;
     })
     .finally(() => {
@@ -144,9 +181,12 @@ const getData = (page = 1) => {
 <style scoped>
 .imgTitle {
   /* top: 132px; */
-  bottom: 5px;
+  bottom: 10px;
   left: 0;
   right: 0;
   @apply absolute truncate text-sm text-gray-100 bg-opacity-50 bg-gray-800 p-1;
+}
+.active {
+  border-color: rgb(59, 130, 246) !important;
 }
 </style>
