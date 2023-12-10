@@ -174,10 +174,10 @@
               >商品规格</el-button
             >
             <el-button
-              type="primary"
+              :type="scope.row.goods_banner.length ? 'primary' : 'danger'"
               size="small"
               text
-              @click="handleEdit(scope.row)"
+              @click="bannersRef.dialogSwitch(scope.row)"
               >商品轮播图</el-button
             >
 
@@ -285,12 +285,13 @@
       </el-form-item>
     </el-form>
   </FormDrawer>
+  <Banners ref="bannersRef" @refreshData="getData(1, searchTab)" />
 </template>
 <script setup>
 import selectImg from "@/components/selectImg.vue";
 import FormDrawer from "@/components/FormDrawer.vue";
+import Banners from "./banners.vue";
 import { getCategoryList } from "@/api/category.js";
-import { changeAdminStatus } from "@/api/admin.js";
 import {
   getGoodsList,
   addGoods,
@@ -338,6 +339,8 @@ const {
     min_oprice: 0, //最低原价
   },
 });
+
+const bannersRef = ref(null);
 
 const ids = ref([]);
 //未选择禁用按钮
@@ -418,7 +421,7 @@ const reset = () => {
   getData(1, { tab: "all" });
 };
 
-// 禁用管理员
+// 批量上下架
 const changeStatus = (status) => {
   loading.value = true;
   updateGoodsStatus(ids.value, status)

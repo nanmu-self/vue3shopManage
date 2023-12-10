@@ -32,3 +32,7 @@ export function updateGoodsStatus(ids, status) {
 export function getGoodsInfo(id) {
   return axios.get("/admin/goods/read/" + id);
 }
+//设置商品轮播图
+export function setGoodsBanner(id, banners) {
+  return axios.post("/admin/goods/banners/" + id, { banners });
+}

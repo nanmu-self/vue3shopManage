@@ -74,19 +74,24 @@
 import { getimageList, upimageName, deleteimage } from "@/api/image.js";
 import upFile from "@/components/upFile.vue";
 import bus from "./bus.js";
-defineProps({
+const props = defineProps({
   isCheckbox: {
     type: Boolean,
     default: false,
+  },
+  limit: {
+    type: Number,
+    default: 1,
   },
 });
 //选择图片
 const handleCheck = (item) => {
   let t = dataList.value.filter((e) => e.checked);
-  if (item.checked && t.length > 1) {
+
+  if (item.checked && t.length > props.limit) {
     item.checked = false;
     return ElNotification({
-      message: "最多选择一张",
+      message: "不能在选啦！最多选" + props.limit + "张图片",
       type: "error",
     });
   }
