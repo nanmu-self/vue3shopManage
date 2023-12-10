@@ -137,7 +137,7 @@
 </template>
 <script setup>
 import FormDrawer from "@/components/FormDrawer.vue";
-import selectImg from "./selectImg.vue";
+import selectImg from "@/components/selectImg.vue";
 import {
   getAdminList,
   changeAdminStatus,

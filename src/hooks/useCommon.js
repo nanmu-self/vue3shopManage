@@ -1,3 +1,5 @@
+import { type } from "windicss/utils";
+
 class MyClass {
   constructor(obj) {
     // 遍历对象的属性
@@ -20,6 +22,18 @@ export function useInitTable(option = {}) {
 
   //   获取数据
   const getData = (page = 1, keyword = "", limit = 10) => {
+    //删除属性为空的属性
+    if (typeof keyword === "object") {
+      Object.keys(keyword).forEach((key) => {
+        if (
+          keyword[key] === null ||
+          keyword[key] === "" ||
+          keyword[key] === undefined
+        ) {
+          delete keyword[key];
+        }
+      });
+    }
     loading.value = true;
     option
       .getList(page, keyword, limit)
