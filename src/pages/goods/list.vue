@@ -11,16 +11,37 @@
     <template #header>
       <div class="flex items-center justify-between">
         <div class="flex items-center">
-          <span class="text-sm mr-1">关键词</span>
+          <span class="text-xs mr-1">关键字</span>
           <el-input
             class="flex-1"
-            v-model="searchKey"
-            placeholder="管理员昵称"
+            v-model="searchTab.title"
+            placeholder="商品名称"
             clearable
+            size="small"
           />
+          <div class="text-xs ml-5">商品分类</div>
+          <el-select
+            v-model="searchTab.category_id"
+            class="m-2"
+            placeholder="请选择商品分类"
+            size="small"
+            @visible-change="getCategories"
+            :loading="selectLoading"
+            clearable
+          >
+            <el-option
+              v-for="item in categories"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
         </div>
         <div>
-          <el-button type="primary" size="small" @click="searchUser"
+          <el-button
+            type="primary"
+            size="small"
+            @click="handleSearch(1, searchTab)"
             >搜索</el-button
           >
           <el-button size="small" @click="reset">重置</el-button>
@@ -47,7 +68,7 @@
               style="width: 50px; height: 50px"
             ></el-image>
             <div>
-              <span>商品名</span>
+              <span>{{ row.title }}</span>
               <div>
                 <span class="text-rose-500">￥{{ row.min_price }}</span>
                 <el-divider direction="vertical" />
@@ -86,7 +107,7 @@
             >
             <el-button
               style="margin-left: 0; margin-top: 5px"
-              type="drawer"
+              type="danger"
               size="small"
               @click=""
               plain
@@ -186,6 +207,7 @@
 </template>
 <script setup>
 import FormDrawer from "@/components/FormDrawer.vue";
+import { getCategoryList } from "@/api/category.js";
 import {
   getAdminList,
   changeAdminStatus,
@@ -208,6 +230,7 @@ const {
   handleEdit,
   addBtn,
   handleSubmit,
+  handleSearch,
 } = useInitTable({
   deleteFun: deleteAdmin, //删除
   getList: getGoodsList, //获取列表
@@ -217,7 +240,6 @@ const {
   success: (res) => {
     tableData.value = res.list;
     totalCount.value = res.totalCount;
-    console.log(tableData.value);
   },
   // 初始化表单数据
   InitFormData: {
@@ -256,8 +278,24 @@ const orderType = ref([
   },
 ]);
 
+// 分类列表
+const categories = ref([]);
+const selectLoading = ref(false);
+// 获取分类
+const getCategories = (e) => {
+  if (e && categories.value.length == 0) {
+    selectLoading.value = true;
+    getCategoryList()
+      .then((res) => {
+        categories.value = res;
+      })
+      .finally(() => {
+        selectLoading.value = false;
+      });
+  }
+};
+
 const handleChange = (tab) => {
-  console.log(tab);
   getData(1, { tab });
 };
 
@@ -268,9 +306,9 @@ const searchTab = ref({
   category_id: "",
   limit: 10,
 });
-const searchUser = () => {
-  getData(1, searchKey.value);
-};
+// const searchGoods = () => {
+//   getData(1, searchTab.value);
+// };
 // 重置按钮
 const reset = () => {
   searchKey.value = "";

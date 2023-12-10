@@ -80,6 +80,11 @@ export function useInitTable(option = {}) {
     });
   };
 
+  //搜索
+  const handleSearch = (page, val) => {
+    getData(page, val);
+  };
+
   return {
     tableData,
     totalCount,
@@ -93,5 +98,6 @@ export function useInitTable(option = {}) {
     addBtn,
     getData,
     handleSubmit,
+    handleSearch,
   };
 }

@@ -12,7 +12,10 @@
           />
         </div>
         <div>
-          <el-button type="primary" size="small" @click="searchUser"
+          <el-button
+            type="primary"
+            size="small"
+            @click="handleSearch(1, searchKey)"
             >搜索</el-button
           >
           <el-button size="small" @click="reset">重置</el-button>
@@ -156,6 +159,7 @@ const {
   handleEdit,
   addBtn,
   handleSubmit,
+  handleSearch,
 } = useInitTable({
   deleteFun: deleteAdmin, //删除
   getList: getAdminList, //获取列表
@@ -182,9 +186,7 @@ const {
 
 //搜索管理员
 const searchKey = ref("");
-const searchUser = () => {
-  getData(1, searchKey.value);
-};
+
 // 重置按钮
 const reset = () => {
   searchKey.value = "";
