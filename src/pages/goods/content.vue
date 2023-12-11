@@ -1,27 +1,10 @@
 <template>
-  <!-- <el-dialog
-    v-model="dialogVisible"
-    title="设置商品详情"
-    width="70%"
-    destroy-on-close
-    :close-on-click-modal="false"
-  >
-    <div>
-      <Editor v-model="content" />
-    </div>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogSwitch">取消</el-button>
-        <el-button type="primary" @click="submit"> 确认 </el-button>
-      </span>
-    </template>
-  </el-dialog>
-  <selectImg ref="selectImgRef" /> -->
   <FormDrawer
     ref="formDrawerRef"
     size="60%"
     title="设置商品详情"
     @submit="handleSubmit"
+    destroyOnClose
   >
     <Editor v-model="content" />
   </FormDrawer>
@@ -33,24 +16,25 @@ import { updateGoods } from "@/api/goods";
 
 const content = ref("");
 
-const handleSubmit = () => {};
+const goodsId = ref(0);
+
+const handleSubmit = () => {
+  formDrawerRef.value.drawerswitch();
+  updateGoods(goodsId.value, { content: content.value }).then((res) => {
+    ElNotification({
+      message: "设置商品详情成功",
+      type: "success",
+    });
+    emit("refreshData");
+  });
+};
 const formDrawerRef = ref(null);
 
 const dialogSwitch = (item) => {
+  goodsId.value = item.id;
   content.value = item.content;
   formDrawerRef.value.drawerswitch();
-  //   dialogVisible.value = !dialogVisible.value;
-  //   if (!item.id) return;
-  //   goodsId.value = item.id;
-  //   loading.value = true;
-  //   getGoodsInfo(item.id)
-  //     .then((res) => {
-  //       console.log(res);
-  //       goodsBanner.value = res.goodsBanner.map((e) => e.url);
-  //     })
-  //     .finally(() => {
-  //       loading.value = false;
-  //     });
 };
+const emit = defineEmits(["refreshData"]);
 defineExpose({ dialogSwitch });
 </script>

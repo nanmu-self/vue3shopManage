@@ -36,3 +36,7 @@ export function getGoodsInfo(id) {
 export function setGoodsBanner(id, banners) {
   return axios.post("/admin/goods/banners/" + id, { banners });
 }
+//更新商品规格
+export function updateGoodsSpec(id, data) {
+  return axios.post("/admin/goods/updateskus/" + id, data);
+}

@@ -286,7 +286,7 @@
     </el-form>
   </FormDrawer>
   <Banners ref="bannersRef" @refreshData="getData(1, searchTab)" />
-  <Content ref="contentRef" />
+  <Content ref="contentRef" @refreshData="getData(1, searchTab)" />
 </template>
 <script setup>
 import selectImg from "@/components/selectImg.vue";
