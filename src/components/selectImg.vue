@@ -1,5 +1,5 @@
 <template>
-  <div class="flex">
+  <div class="flex" v-if="preview">
     <div v-if="modelValue" class="">
       <el-image
         v-if="typeof modelValue == 'string'"
@@ -67,17 +67,23 @@ const props = defineProps({
     type: Number,
     default: 1,
   },
+  preview: {
+    type: Boolean,
+    default: true,
+  },
 });
 const emit = defineEmits(["update:modelValue"]);
+const dialogSwitch = () => {
+  dialogVisible.value = !dialogVisible.value;
+};
+defineExpose({ dialogSwitch });
 
 //选中的图片
 let urls = [];
 const selectimg = (item) => {
   urls = item.map((e) => e.url);
-  // console.log(urls);
 };
 const submit = () => {
-  console.log(urls);
   if (props.limit == 1) {
     emit("update:modelValue", urls[0]);
     dialogVisible.value = false;

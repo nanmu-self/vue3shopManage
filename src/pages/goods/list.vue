@@ -182,10 +182,10 @@
             >
 
             <el-button
-              type="primary"
+              :type="scope.row.content ? 'primary' : 'danger'"
               size="small"
               text
-              @click="handleEdit(scope.row)"
+              @click="contentRef.dialogSwitch(scope.row)"
               >商品详情</el-button
             >
 
@@ -286,11 +286,13 @@
     </el-form>
   </FormDrawer>
   <Banners ref="bannersRef" @refreshData="getData(1, searchTab)" />
+  <Content ref="contentRef" />
 </template>
 <script setup>
 import selectImg from "@/components/selectImg.vue";
 import FormDrawer from "@/components/FormDrawer.vue";
 import Banners from "./banners.vue";
+import Content from "./content.vue";
 import { getCategoryList } from "@/api/category.js";
 import {
   getGoodsList,
@@ -339,7 +341,7 @@ const {
     min_oprice: 0, //最低原价
   },
 });
-
+const contentRef = ref(null);
 const bannersRef = ref(null);
 
 const ids = ref([]);
