@@ -6,7 +6,7 @@
           class="mb-3"
           :span="6"
           :offset="0"
-          v-for="item in dataList"
+          v-for="item in tableData"
           :key="item.id"
         >
           <el-card
@@ -58,7 +58,7 @@
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="total"
+        :total="totalCount"
         :current-page="currentPage"
         :page-size="limit"
         @current-change="getData"
@@ -74,6 +74,10 @@
 import { getimageList, upimageName, deleteimage } from "@/api/image.js";
 import upFile from "@/components/upFile.vue";
 import bus from "./bus.js";
+
+import { useInitTable } from "@/hooks/useCommon.js";
+let { currentPage, limit, totalCount, loading, tableData } = useInitTable();
+
 const props = defineProps({
   isCheckbox: {
     type: Boolean,
@@ -86,7 +90,7 @@ const props = defineProps({
 });
 //选择图片
 const handleCheck = (item) => {
-  let t = dataList.value.filter((e) => e.checked);
+  let t = tableData.value.filter((e) => e.checked);
 
   if (item.checked && t.length > props.limit) {
     item.checked = false;
@@ -159,23 +163,16 @@ bus.on("imgClassId", (e) => {
   getData(1);
 });
 
-const dataList = ref([]);
-const loading = ref(false);
-// 分页
-const currentPage = ref(1); //当前页码
-const limit = ref(10); //一页多少数据
-const total = ref(0); //总数量
-
 const getData = (page = 1) => {
   currentPage.value = page;
   loading.value = true;
   getimageList(imageClassId.value, currentPage.value)
     .then((res) => {
-      dataList.value = res.list.map((e) => {
+      tableData.value = res.list.map((e) => {
         e.checked = false;
         return e;
       });
-      total.value = res.totalCount;
+      totalCount.value = res.totalCount;
     })
     .finally(() => {
       loading.value = false;

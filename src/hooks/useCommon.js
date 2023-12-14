@@ -13,12 +13,16 @@ class MyClass {
 }
 export function useInitTable(option = {}) {
   const tableData = ref([]); //数据列表
-  const totalCount = ref(0); //总数据条数
+
   const loading = ref(false); //loading动画
   const formRef = ref(null); //表单ref
   const selectedId = ref(0); //选中的id
   const formDrawerRef = ref(null); //表单抽屉ref
   const form = reactive(new MyClass(option.InitFormData)); //表单数据
+  // 分页
+  const currentPage = ref(1); //当前页码
+  const limit = ref(10); //一页多少数据
+  const totalCount = ref(0); //总数据条数
 
   //   获取数据
   const getData = (page = 1, keyword = "", limit = 10) => {
@@ -35,6 +39,7 @@ export function useInitTable(option = {}) {
       });
     }
     loading.value = true;
+    currentPage.value = page;
     option
       .getList(page, keyword, limit)
       .then((res) => {
@@ -107,6 +112,8 @@ export function useInitTable(option = {}) {
     selectedId,
     formDrawerRef,
     form,
+    currentPage,
+    limit,
     handleDelete,
     handleEdit,
     addBtn,
@@ -115,3 +122,6 @@ export function useInitTable(option = {}) {
     handleSearch,
   };
 }
+
+//分页
+export function usePage(option = {}) {}

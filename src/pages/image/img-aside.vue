@@ -3,8 +3,8 @@
     <div class="top">
       <div
         class="list"
-        :class="{ active: activeId == item.id }"
-        v-for="item in imgClassList"
+        :class="{ active: selectedId == item.id }"
+        v-for="item in tableData"
         :key="item.id"
         @click="handleChangeActiveId(item.id)"
       >
@@ -35,8 +35,8 @@
     <div class="bottom">
       <el-pagination
         background
-        layout="prev,  next"
-        :total="total"
+        layout="prev, next"
+        :total="totalCount"
         :current-page="currentPage"
         :page-size="limit"
         @current-change="getData"
@@ -48,6 +48,18 @@
 import { deleteimageClass } from "@/api/image.js";
 import { getimageClass } from "@/api/image.js";
 import bus from "./bus.js";
+import { useInitTable } from "@/hooks/useCommon.js";
+let { getData, currentPage, limit, totalCount, loading, tableData } =
+  useInitTable({
+    getList: getimageClass,
+    success: (res) => {
+      console.log(res);
+      tableData.value = res.list;
+      totalCount.value = res.totalCount;
+      selectedId.value = res.list[0].id;
+      bus.emit("imgClassId", res.list[0].id);
+    },
+  });
 //删除
 const handleDelete = (id) => {
   loading.value = true;
@@ -69,36 +81,16 @@ const handleEdit = (item) => {
 };
 const emit = defineEmits(["edit"]);
 
-const loading = ref(false);
-const imgClassList = ref([]);
-const activeId = ref(0);
+const selectedId = ref(0);
 
-// 分页
-const currentPage = ref(1); //当前页码
-const limit = ref(10); //一页多少数据
-const total = ref(0); //总数量
-
-const getData = (page = 1) => {
-  currentPage.value = page;
-  loading.value = true;
-  getimageClass(page)
-    .then((res) => {
-      imgClassList.value = res.list;
-      total.value = res.totalCount;
-      activeId.value = res.list[0].id;
-      bus.emit("imgClassId", res.list[0].id);
-    })
-    .finally(() => {
-      loading.value = false;
-    });
-};
 getData();
+
 defineExpose({
   getData,
 });
 
 const handleChangeActiveId = (id) => {
-  activeId.value = id;
+  selectedId.value = id;
   bus.emit("imgClassId", id);
 };
 </script>

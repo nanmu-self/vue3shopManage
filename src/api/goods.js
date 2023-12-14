@@ -53,3 +53,21 @@ export function updateGoodsSpecOption(id, data) {
 export function deleteGoodsSpecOption(id) {
   return axios.post(`/admin/goods_skus_card/${id}/delete`);
 }
+//排序商品规格选项
+export function sortGoodsSpecOption(data) {
+  return axios.post(`/admin/goods_skus_card/sort`, {
+    sortdata: data,
+  });
+}
+//添加商品规格选项的值
+export function addGoodsSpecOptionValue(data) {
+  return axios.post("/admin/goods_skus_card_value", data);
+}
+//修改商品规格选项的值
+export function updateGoodsSpecOptionValue(id, data) {
+  return axios.post("/admin/goods_skus_card_value/" + id, data);
+}
+//删除商品规格选项的值
+export function deleteGoodsSpecOptionValue(id) {
+  return axios.post(`/admin/goods_skus_card_value/${id}/delete`);
+}
