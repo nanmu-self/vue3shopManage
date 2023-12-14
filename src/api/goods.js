@@ -40,3 +40,16 @@ export function setGoodsBanner(id, banners) {
 export function updateGoodsSpec(id, data) {
   return axios.post("/admin/goods/updateskus/" + id, data);
 }
+//添加商品规格选项
+export function addGoodsSpecOption(data) {
+  return axios.post("/admin/goods_skus_card", data);
+}
+//修改商品规格选项
+export function updateGoodsSpecOption(id, data) {
+  return axios.post("/admin/goods_skus_card/" + id, data);
+}
+//删除商品规格选项
+
+export function deleteGoodsSpecOption(id) {
+  return axios.post(`/admin/goods_skus_card/${id}/delete`);
+}

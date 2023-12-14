@@ -170,7 +170,7 @@
               type="primary"
               size="small"
               text
-              @click="handleEdit(scope.row)"
+              @click="skusRef.dialogSwitch(scope.row)"
               >商品规格</el-button
             >
             <el-button
@@ -287,12 +287,14 @@
   </FormDrawer>
   <Banners ref="bannersRef" @refreshData="getData(1, searchTab)" />
   <Content ref="contentRef" @refreshData="getData(1, searchTab)" />
+  <Skus ref="skusRef" @refreshData="getData(1, searchTab)" />
 </template>
 <script setup>
 import selectImg from "@/components/selectImg.vue";
 import FormDrawer from "@/components/FormDrawer.vue";
 import Banners from "./banners.vue";
 import Content from "./content.vue";
+import Skus from "./skus.vue";
 import { getCategoryList } from "@/api/category.js";
 import {
   getGoodsList,
@@ -343,6 +345,7 @@ const {
 });
 const contentRef = ref(null);
 const bannersRef = ref(null);
+const skusRef = ref(null);
 
 const ids = ref([]);
 //未选择禁用按钮
