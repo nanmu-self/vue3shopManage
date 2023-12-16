@@ -49,32 +49,26 @@ import { deleteimageClass } from "@/api/image.js";
 import { getimageClass } from "@/api/image.js";
 import bus from "./bus.js";
 import { useInitTable } from "@/hooks/useCommon.js";
-let { getData, currentPage, limit, totalCount, loading, tableData } =
-  useInitTable({
-    getList: getimageClass,
-    success: (res) => {
-      console.log(res);
-      tableData.value = res.list;
-      totalCount.value = res.totalCount;
-      selectedId.value = res.list[0].id;
-      bus.emit("imgClassId", res.list[0].id);
-    },
-  });
-//删除
-const handleDelete = (id) => {
-  loading.value = true;
-  deleteimageClass(id)
-    .then((res) => {
-      ElNotification({
-        message: "删除成功",
-        type: "success",
-      });
-      getData();
-    })
-    .finally(() => {
-      loading.value = false;
-    });
-};
+let {
+  getData,
+  currentPage,
+  limit,
+  totalCount,
+  loading,
+  tableData,
+  handleDelete,
+} = useInitTable({
+  getList: getimageClass,
+  deleteFun: deleteimageClass,
+  success: (res) => {
+    console.log(res);
+    tableData.value = res.list;
+    totalCount.value = res.totalCount;
+    selectedId.value = res.list[0].id;
+    bus.emit("imgClassId", res.list[0].id);
+  },
+});
+
 // 修改
 const handleEdit = (item) => {
   emit("edit", item);

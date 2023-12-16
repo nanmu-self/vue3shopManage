@@ -61,13 +61,13 @@
         :total="totalCount"
         :current-page="currentPage"
         :page-size="limit"
-        @current-change="getData"
+        @current-change="getData($event, selectedId)"
       />
     </div>
   </el-main>
 
   <el-drawer v-model="drawer" title="上传图片">
-    <upFile :data="{ image_class_id: imageClassId }" @success="upingSuccess" />
+    <upFile :data="{ image_class_id: selectedId }" @success="upingSuccess" />
   </el-drawer>
 </template>
 <script setup>
@@ -76,7 +76,24 @@ import upFile from "@/components/upFile.vue";
 import bus from "./bus.js";
 
 import { useInitTable } from "@/hooks/useCommon.js";
-let { currentPage, limit, totalCount, loading, tableData } = useInitTable();
+let {
+  currentPage,
+  limit,
+  selectedId,
+  totalCount,
+  loading,
+  tableData,
+  getData,
+} = useInitTable({
+  getList: getimageList,
+  success: (res) => {
+    tableData.value = res.list.map((e) => {
+      e.checked = false;
+      return e;
+    });
+    totalCount.value = res.totalCount;
+  },
+});
 
 const props = defineProps({
   isCheckbox: {
@@ -156,28 +173,10 @@ const handleEdit = (item) => {
   });
 };
 
-const imageClassId = ref(0);
-
 bus.on("imgClassId", (e) => {
-  imageClassId.value = e;
-  getData(1);
+  selectedId.value = e;
+  getData(currentPage.value, selectedId.value);
 });
-
-const getData = (page = 1) => {
-  currentPage.value = page;
-  loading.value = true;
-  getimageList(imageClassId.value, currentPage.value)
-    .then((res) => {
-      tableData.value = res.list.map((e) => {
-        e.checked = false;
-        return e;
-      });
-      totalCount.value = res.totalCount;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
-};
 </script>
 
 <style scoped>

@@ -1,5 +1,4 @@
 <template>
-  <!-- <div>{{ goodsSkusCardValue }}</div> -->
   <el-tag
     v-for="(tag, i) in goodsSkusCardValue"
     :key="tag.id"
@@ -36,7 +35,11 @@ import {
   updateGoodsSpecOptionValue,
   deleteGoodsSpecOptionValue,
 } from "@/api/goods";
-const props = defineProps({ goodsSkusCardValue: Array });
+const props = defineProps({
+  goodsSkusCardValue: Array,
+  id: Number,
+  name: String,
+});
 
 const inputValue = ref("");
 const inputVisible = ref(false);
@@ -49,6 +52,7 @@ const handleClose = (tag, i) => {
 };
 //修改
 const handleInputChange = (tag) => {
+  console.log(tag);
   updateGoodsSpecOptionValue(tag.id, tag).then((res) => {
     console.log(res);
   });
@@ -63,8 +67,8 @@ const handleInputConfirm = () => {
   }
   let goodsSkusCardValue = props.goodsSkusCardValue;
   let obj = {
-    goods_skus_card_id: goodsSkusCardValue[0].goods_skus_card_id,
-    name: goodsSkusCardValue[0].name,
+    goods_skus_card_id: props.id,
+    name: props.name,
     order: 50,
     value: inputValue.value,
   };

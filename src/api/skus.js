@@ -27,3 +27,7 @@ export function updateSkuStatus(id, status) {
     status,
   });
 }
+//选择设置商品规格选项和值
+export function selectGoodsSpecOptionValue(id, data) {
+  return axios.post(`/admin/goods_skus_card/${id}/set`, data);
+}

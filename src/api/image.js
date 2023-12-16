@@ -23,7 +23,8 @@ export function deleteimageClass(id) {
   return axios.post(`/admin/image_class/${id}/delete`);
 }
 // 获取指定分类下的图片列表
-export function getimageList(id, page) {
+export function getimageList(page, id) {
+  console.log(id, page);
   return axios.get(`/admin/image_class/${id}/image/${page}`);
 }
 //修改图片名称

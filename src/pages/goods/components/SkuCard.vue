@@ -14,7 +14,7 @@
           @blur="updateGoodsSpec(item)"
         >
           <template #append>
-            <el-icon @click="selectSkuRef.dialogSwitch()" class="cursor-pointer"
+            <el-icon @click="moreFun(item)" class="cursor-pointer"
               ><More
             /></el-icon>
           </template>
@@ -47,7 +47,12 @@
         </div>
       </div>
     </template>
-    <Skuitem :goodsSkusCardValue="item.goods_skus_card_value" />
+
+    <Skuitem
+      :goodsSkusCardValue="item.goodsSkusCardValue"
+      :id="item.id"
+      :name="item.name"
+    />
   </el-card>
 
   <el-button
@@ -60,6 +65,8 @@
   >
 
   <selectSku ref="selectSkuRef" />
+  <!-- //规格设置 -->
+  <SkuTable />
 </template>
 <script setup>
 import {
@@ -68,25 +75,27 @@ import {
   deleteGoodsSpecOption,
   sortGoodsSpecOption,
 } from "@/api/goods.js";
-import { goodsId } from "../hooks/sku";
+import { goodsId, goodsSkusCard } from "../hooks/sku";
 import selectSku from "./selectSku.vue";
+import SkuTable from "./SkuTable.vue";
 import Skuitem from "./Skuitem.vue";
-const props = defineProps({
-  goodsSkusCard: Array,
-});
+
 const selectSkuRef = ref(null);
+
 //排序
 const sortMove = (i, type) => {
-  let { goodsSkusCard } = props;
-  let temp = goodsSkusCard[i];
+  let SkusCard = goodsSkusCard.value;
+
+  let temp = SkusCard[i];
   if (type === "up") {
-    goodsSkusCard[i] = goodsSkusCard[i - 1];
-    goodsSkusCard[i - 1] = temp;
+    SkusCard[i] = SkusCard[i - 1];
+    SkusCard[i - 1] = temp;
   } else {
-    goodsSkusCard[i] = goodsSkusCard[i + 1];
-    goodsSkusCard[i + 1] = temp;
+    SkusCard[i] = SkusCard[i + 1];
+    SkusCard[i + 1] = temp;
   }
-  let data = goodsSkusCard.map((e, index) => {
+
+  let data = SkusCard.map((e, index) => {
     return {
       order: index + 1,
       id: e.id,
@@ -95,6 +104,9 @@ const sortMove = (i, type) => {
   sortGoodsSpecOption(data).then((res) => {
     console.log(res);
   });
+};
+const moreFun = (item) => {
+  selectSkuRef.value.dialogSwitch(item);
 };
 
 const cardLoading = ref(false);
@@ -112,8 +124,8 @@ const addOption = () => {
   //添加规格
   addGoodsSpecOption(obj)
     .then((res) => {
-      res.goods_skus_card_value = [];
-      props.goodsSkusCard.push(res);
+      res.goodsSkusCardValue = [];
+      goodsSkusCard.value.push(res);
     })
     .finally(() => {
       btnLoading.value = false;
@@ -129,9 +141,9 @@ const defineEmits = (id) => {
   cardLoading.value = true;
   deleteGoodsSpecOption(id)
     .then((res) => {
-      let i = props.goodsSkusCard.findIndex((item) => item.id == id);
+      let i = goodsSkusCard.value.findIndex((item) => item.id == id);
       if (i > -1) {
-        props.goodsSkusCard.splice(i, 1);
+        goodsSkusCard.value.splice(i, 1);
       }
     })
     .finally(() => {

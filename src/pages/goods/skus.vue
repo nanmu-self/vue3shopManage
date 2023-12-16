@@ -1,10 +1,4 @@
 <template>
-  <!-- <el-dialog
-    v-model="dialogVisible"
-    title="设置商品规格"
-    width="70%"
-    destroy-on-close
-  > -->
   <FormDrawer
     ref="formDrawerRef"
     title="设置商品规格"
@@ -63,27 +57,19 @@
         </el-form-item>
       </template>
       <template v-else>
-        <SkuCard :goodsSkusCard="goodsSkusCard" />
+        <!-- //多规格 -->
+        <SkuCard />
       </template>
     </el-form>
-
-    <!-- <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="submit"> 确认 </el-button>
-      </span>
-    </template> -->
   </FormDrawer>
-  <!-- </el-dialog> -->
 </template>
 <script setup>
 import FormDrawer from "@/components/FormDrawer.vue";
 import SkuCard from "./components/SkuCard.vue";
 import { updateGoodsSpec } from "@/api/goods";
-import { goodsId } from "./hooks/sku";
+import { goodsId, getGoodsDetail } from "./hooks/sku";
 
 const formDrawerRef = ref(null);
-// const goodsId = ref(0);
 const form = reactive({
   sku_type: 0,
   sku_value: {
@@ -105,10 +91,11 @@ const submit = () => {
   });
   formDrawerRef.value.drawerswitch();
 };
-const goodsSkusCard = ref([]);
+
 const dialogSwitch = (item) => {
-  goodsSkusCard.value = item.goods_skus_card;
   console.log(item);
+  goodsId.value = item.id;
+  getGoodsDetail(item.id);
   form.sku_type = item.sku_type;
   form.sku_value = item.sku_value || {
     oprice: 0,
@@ -117,7 +104,7 @@ const dialogSwitch = (item) => {
     weight: 0,
     volume: 0,
   };
-  goodsId.value = item.id;
+
   formDrawerRef.value.drawerswitch();
 };
 const emit = defineEmits(["refreshData"]);
