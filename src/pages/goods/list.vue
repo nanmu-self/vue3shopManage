@@ -51,7 +51,26 @@
     <div class="flex items-center justify-between mb-4">
       <div>
         <el-button type="primary" size="small" @click="addBtn"> 新增</el-button>
+        <el-button
+          v-if="searchTab.tab == 'delete'"
+          type="warning"
+          size="small"
+          @click="recoverGoods"
+          :disabled="disabledBtn"
+        >
+          恢复商品</el-button
+        >
+        <el-button
+          v-if="searchTab.tab == 'delete'"
+          type="danger"
+          size="small"
+          @click="deleteGoodsAll"
+          :disabled="disabledBtn"
+        >
+          彻底删除</el-button
+        >
         <el-popconfirm
+          v-if="searchTab.tab != 'delete'"
           width="220"
           confirm-button-text="确认"
           cancel-button-text="取消"
@@ -302,6 +321,8 @@ import {
   updateGoods,
   deleteGoods,
   updateGoodsStatus,
+  restoreGoods,
+  deleteGoodsForever,
 } from "@/api/goods.js";
 import { useInitTable } from "@/hooks/useCommon";
 const {
@@ -355,6 +376,27 @@ const disabledBtn = computed(() => {
 //多选
 const handleSelectionChange = (val) => {
   ids.value = val.map((item) => item.id);
+};
+//彻底删除
+const deleteGoodsAll = () => {
+  console.log(ids.value);
+  deleteGoodsForever(ids.value).then((res) => {
+    ElNotification({
+      message: "删除成功",
+      type: "success",
+    });
+    getData(1, searchTab.value);
+  });
+};
+// 恢复商品
+const recoverGoods = () => {
+  restoreGoods(ids.value).then((res) => {
+    ElNotification({
+      message: "恢复商品成功",
+      type: "success",
+    });
+    getData(1, searchTab.value);
+  });
 };
 
 //订单类型

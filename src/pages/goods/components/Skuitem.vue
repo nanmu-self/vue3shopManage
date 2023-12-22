@@ -26,7 +26,7 @@
     @blur="handleInputConfirm"
   />
   <el-button v-else class="button-new-tag ml-1" size="small" @click="showInput">
-    + New Tag
+    + 添加规格值
   </el-button>
 </template>
 <script setup>
@@ -35,6 +35,7 @@ import {
   updateGoodsSpecOptionValue,
   deleteGoodsSpecOptionValue,
 } from "@/api/goods";
+import { getGoodsDetail } from "../hooks/sku";
 const props = defineProps({
   goodsSkusCardValue: Array,
   id: Number,
@@ -47,12 +48,11 @@ const inputVisible = ref(false);
 const handleClose = (tag, i) => {
   props.goodsSkusCardValue.splice(i, 1);
   deleteGoodsSpecOptionValue(tag.id).then((res) => {
-    console.log(res);
+    getGoodsDetail();
   });
 };
 //修改
 const handleInputChange = (tag) => {
-  console.log(tag);
   updateGoodsSpecOptionValue(tag.id, tag).then((res) => {
     console.log(res);
   });
@@ -65,7 +65,7 @@ const handleInputConfirm = () => {
     inputVisible.value = false;
     return;
   }
-  let goodsSkusCardValue = props.goodsSkusCardValue;
+  // let goodsSkusCardValue = props.goodsSkusCardValue;
   let obj = {
     goods_skus_card_id: props.id,
     name: props.name,
@@ -73,7 +73,8 @@ const handleInputConfirm = () => {
     value: inputValue.value,
   };
   addGoodsSpecOptionValue(obj).then((res) => {
-    goodsSkusCardValue.push(res);
+    // goodsSkusCardValue.push(res);
+    getGoodsDetail();
     inputValue.value = "";
     inputVisible.value = false;
   });

@@ -4,7 +4,7 @@
     title="设置商品规格"
     @submit="submit"
     destroyOnClose
-    size="60%"
+    size="70%"
   >
     <el-form :model="form" ref="formRef" label-width="80px">
       <el-form-item label="规格类型" class="items-center">
@@ -67,10 +67,11 @@
 import FormDrawer from "@/components/FormDrawer.vue";
 import SkuCard from "./components/SkuCard.vue";
 import { updateGoodsSpec } from "@/api/goods";
-import { goodsId, getGoodsDetail } from "./hooks/sku";
+import { goodsId, getGoodsDetail, goodsSkus } from "./hooks/sku";
 
 const formDrawerRef = ref(null);
 const form = reactive({
+  // goodsSkus: goodsSkus.value,
   sku_type: 0,
   sku_value: {
     oprice: 0,
@@ -82,6 +83,10 @@ const form = reactive({
 });
 
 const submit = () => {
+  console.log(goodsSkus.value);
+  if (form.sku_type) {
+    form.goodsSkus = goodsSkus.value;
+  }
   updateGoodsSpec(goodsId.value, form).then((res) => {
     ElNotification({
       message: "设置商品规格成功",

@@ -75,7 +75,7 @@ import {
   deleteGoodsSpecOption,
   sortGoodsSpecOption,
 } from "@/api/goods.js";
-import { goodsId, goodsSkusCard } from "../hooks/sku";
+import { goodsId, goodsSkusCard, getGoodsDetail } from "../hooks/sku";
 import selectSku from "./selectSku.vue";
 import SkuTable from "./SkuTable.vue";
 import Skuitem from "./Skuitem.vue";
@@ -124,8 +124,9 @@ const addOption = () => {
   //添加规格
   addGoodsSpecOption(obj)
     .then((res) => {
-      res.goodsSkusCardValue = [];
-      goodsSkusCard.value.push(res);
+      // res.goodsSkusCardValue = [];
+      getGoodsDetail();
+      // goodsSkusCard.value.push(res);
     })
     .finally(() => {
       btnLoading.value = false;
@@ -141,10 +142,11 @@ const defineEmits = (id) => {
   cardLoading.value = true;
   deleteGoodsSpecOption(id)
     .then((res) => {
-      let i = goodsSkusCard.value.findIndex((item) => item.id == id);
-      if (i > -1) {
-        goodsSkusCard.value.splice(i, 1);
-      }
+      // let i = goodsSkusCard.value.findIndex((item) => item.id == id);
+      // if (i > -1) {
+      //   goodsSkusCard.value.splice(i, 1);
+      // }
+      getGoodsDetail();
     })
     .finally(() => {
       cardLoading.value = false;
