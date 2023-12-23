@@ -40,7 +40,7 @@
             confirm-button-text="确认"
             cancel-button-text="取消"
             icon-color="#626AEF"
-            title="是否要删除该公告？"
+            title="是否要删除该会员等级？"
             @confirm="handleDelete(scope.row.id)"
           >
             <template #reference>
@@ -65,11 +65,62 @@
     @submit="handleSubmit"
   >
     <el-form :model="form" ref="formRef" :rules="rules" label-width="80px">
-      <el-form-item label="公告标题" prop="title">
-        <el-input v-model="form.title"></el-input>
+      <el-form-item label="等级名称" prop="name">
+        <el-input v-model="form.name"></el-input>
       </el-form-item>
-      <el-form-item label="公告内容" prop="content">
-        <el-input v-model="form.content" type="textarea"></el-input>
+      <el-form-item label="等级权重">
+        <el-input-number v-model="form.level" :min="1" :max="1000" />
+      </el-form-item>
+      <el-form-item label="状态">
+        <el-switch
+          v-model="form.status"
+          :active-value="1"
+          :inactive-value="0"
+        />
+      </el-form-item>
+      <el-form-item label="升级条件">
+        <div>
+          <span class="mr-2"> 累计消费满</span>
+          <el-input
+            type="number"
+            min="0"
+            v-model="form.max_price"
+            style="width: 50%"
+          >
+            <template #append>元</template>
+          </el-input>
+        </div>
+        <span class="text-gray-400 text-xs mt-2"
+          >设置会员等级所需要的累计消费必须大于等于0,单位：元</span
+        >
+        <div class="mt-2">
+          <span class="mr-2"> 累计次数满</span>
+          <el-input
+            type="number"
+            min="0"
+            v-model="form.max_times"
+            style="width: 50%"
+          >
+            <template #append>次</template>
+          </el-input>
+        </div>
+
+        <span class="text-gray-400 text-xs mt-2"
+          >设置会员等级所需要的购买量必须大于等于0,单位：笔</span
+        >
+      </el-form-item>
+      <el-form-item label="折扣率(%)">
+        <el-input
+          type="number"
+          min="0"
+          v-model="form.discount"
+          style="width: 30%"
+        >
+          <template #append>%</template>
+        </el-input>
+        <span class="text-gray-400 text-xs mt-2"
+          >折扣率单位为百分比，如输入90，表示该会员等级的用户可以以商品原价的90%购买</span
+        >
       </el-form-item>
     </el-form>
   </FormDrawer>
@@ -77,12 +128,12 @@
 <script setup>
 import FormDrawer from "@/components/FormDrawer.vue";
 import {
-  getNotice,
-  addNotice,
-  updateNotice,
-  deleteNotice,
-} from "@/api/notice.js";
-import { levelList } from "@/api/level.js";
+  levelList,
+  levelAdd,
+  levelStatus,
+  levelUpdate,
+  levelDelete,
+} from "@/api/level.js";
 import { useInitTable } from "@/hooks/useCommon";
 const {
   tableData,
@@ -99,12 +150,16 @@ const {
   handleSubmit,
 } = useInitTable({
   getList: levelList, //获取列表
-  deleteFun: deleteNotice, //删除
-  updateData: updateNotice, //更新数据
-  addData: addNotice, //新增数据
+  deleteFun: levelDelete, //删除
+  updateData: levelUpdate, //更新数据
+  addData: levelAdd, //新增数据
   InitFormData: {
-    title: "",
-    content: "",
+    name: "",
+    level: 100,
+    status: 1,
+    max_price: 0,
+    max_times: 0,
+    discount: 0,
   },
   // 获取数据成功之后的回调
   success: (res) => {
@@ -114,19 +169,18 @@ const {
 });
 
 const rules = {
-  title: [
+  name: [
     {
       required: true,
-      message: "请输入公告标题",
-    },
-  ],
-  content: [
-    {
-      required: true,
-      message: "请输入公告内容",
+      message: "请输入等级名称",
     },
   ],
 };
 
+const handleSwitch = (status, item) => {
+  levelStatus(item.id, { status }).then((res) => {
+    getData();
+  });
+};
 getData();
 </script>
