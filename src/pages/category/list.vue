@@ -18,7 +18,11 @@
       >
         <span class="text-sm">{{ item.name }}</span>
         <div>
-          <el-button type="primary" size="default" @click="" link
+          <el-button
+            type="primary"
+            size="default"
+            @click="openPropose(item.id)"
+            link
             >推荐商品</el-button
           >
           <el-switch
@@ -58,6 +62,7 @@
     ref="formDrawerRef"
     :title="selectedId ? '修改分类' : '新增分类'"
     @submit="handleSubmit"
+    destroyOnClose
   >
     <el-form
       :model="form"
@@ -72,8 +77,10 @@
       </el-form-item>
     </el-form>
   </FormDrawer>
+  <Propose ref="proposeRef" />
 </template>
 <script setup>
+import Propose from "./propose.vue";
 import FormDrawer from "@/components/FormDrawer.vue";
 import {
   getCategoryList,
@@ -130,6 +137,11 @@ const handleSwitch = (item) => {
     .finally(() => {
       switchLoading.value = false;
     });
+};
+
+const proposeRef = ref(null);
+const openPropose = (id) => {
+  proposeRef.value.proposeBtn(id);
 };
 </script>
 

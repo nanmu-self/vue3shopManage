@@ -11,9 +11,9 @@
         <slot></slot>
       </div>
       <div class="action">
-        <el-button :loading="loading" type="primary" @click="submitForm"
-          >提交</el-button
-        >
+        <el-button :loading="loading" type="primary" @click="submitForm">{{
+          submitText
+        }}</el-button>
         <el-button type="default" @click="drawerswitch">取消</el-button>
       </div>
     </div>
@@ -29,6 +29,10 @@ defineProps({
   destroyOnClose: {
     type: Boolean,
     default: false,
+  },
+  submitText: {
+    type: String,
+    default: "提交",
   },
 });
 const emit = defineEmits(["submit"]);
