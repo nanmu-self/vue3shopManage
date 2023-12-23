@@ -1,5 +1,3 @@
-import { type } from "windicss/utils";
-
 class MyClass {
   constructor(obj) {
     // 遍历对象的属性
